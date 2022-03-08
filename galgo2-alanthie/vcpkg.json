@@ -1,0 +1,6 @@
+{
+  "name": "galgo2-alanthie",
+  "version-string": "2.0",
+  "homepage": "https://github.com/alanthie/GALGO-2.0",
+  "description": "Genetic Algorithm in C++ with template metaprogramming and abstraction for constrained optimization. (modified but named the same as old)"
+}

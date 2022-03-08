@@ -1,0 +1,6 @@
+{
+  "name": "cubature",
+  "version": "1.0.4",
+  "description": "This is a simple C package for adaptive multidimensional integration (cubature) of vector-valued integrands over hypercubes, written by Steven G. Johnson. ",
+  "homepage": "https://github.com/stevengj/cubature"
+}

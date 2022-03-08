@@ -1,0 +1,13 @@
+{
+  "name": "jsbsim",
+  "version-string": "1.11.1",
+  "port-version": 0,
+  "homepage": "https://github.com/JSBSim-Team/jsbsim",
+  "description": "JSBSim is a multi-platform, general purpose object-oriented Flight Dynamics Model (FDM) written in C++",
+  "dependencies": [
+	{
+	  "name": "vcpkg-cmake",
+	  "host": true
+	}
+	]  
+}
