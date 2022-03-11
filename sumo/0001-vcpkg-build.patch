@@ -1,0 +1,97 @@
+From 72931f144785aff281c05dbb1c65d36bfec7e3d9 Mon Sep 17 00:00:00 2001
+From: Tim <tim@fake.WHAT>
+Date: Fri, 11 Mar 2022 15:17:09 -0500
+Subject: [PATCH] vcpkg build
+
+---
+ CMakeLists.txt                     |  6 +++---
+ build/cmake_modules/FindProj.cmake | 25 ++++++++++++++-----------
+ 2 files changed, 17 insertions(+), 14 deletions(-)
+
+diff --git a/CMakeLists.txt b/CMakeLists.txt
+index 199c7360331..4d214a6c221 100644
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -278,9 +278,9 @@ if (XercesC_FOUND)
+     include_directories(SYSTEM ${XercesC_INCLUDE_DIRS})
+ endif (XercesC_FOUND)
+ 
+-find_package(Proj)
++find_package(PROJ)
+ if (PROJ_FOUND)
+-    include_directories(SYSTEM ${PROJ_INCLUDE_DIR})
++    include_directories(SYSTEM ${PROJ_INCLUDE_DIRS})
+     set(ENABLED_FEATURES "${ENABLED_FEATURES} Proj")
+ endif (PROJ_FOUND)
+ 
+@@ -395,7 +395,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
+ set(commonlibs
+         utils_distribution utils_handlers utils_shapes utils_options
+         utils_xml utils_geom utils_common utils_importio utils_iodevices utils_traction_wire foreign_tcpip
+-        ${XercesC_LIBRARIES} ${ZLIB_LIBRARIES} ${PROJ_LIBRARY} ${TCMALLOC_LIBRARY})
++        ${XercesC_LIBRARIES} ${ZLIB_LIBRARIES} PROJ4::proj ${TCMALLOC_LIBRARY})
+ if (MSVC)
+     set(commonlibs ${commonlibs} ws2_32)
+ endif ()
+diff --git a/build/cmake_modules/FindProj.cmake b/build/cmake_modules/FindProj.cmake
+index 92cf92c2685..57bdbeffd04 100644
+--- a/build/cmake_modules/FindProj.cmake
++++ b/build/cmake_modules/FindProj.cmake
+@@ -46,6 +46,11 @@
+ 
+ # try to use framework on mac
+ # want clean framework path, not unix compatibility path
++
++
++find_package(PROJ CONFIG REQUIRED)
++set(PROJ_LIBRARY ${PROJ_LIBRARIES})
++
+ IF (APPLE)
+   IF (CMAKE_FIND_FRAMEWORK MATCHES "FIRST"
+       OR CMAKE_FRAMEWORK_PATH MATCHES "ONLY"
+@@ -53,7 +58,7 @@ IF (APPLE)
+     SET (CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
+     SET (CMAKE_FIND_FRAMEWORK "ONLY" CACHE STRING "" FORCE)
+     #FIND_PATH(PROJ_INCLUDE_DIR PROJ/proj_api.h)
+-    FIND_LIBRARY(PROJ_LIBRARY PROJ)
++    #FIND_LIBRARY(PROJ_LIBRARY PROJ)
+     IF (PROJ_LIBRARY)
+       # FIND_PATH doesn't add "Headers" for a framework
+       SET (PROJ_INCLUDE_DIR ${PROJ_LIBRARY}/Headers CACHE PATH "Path to a file.")
+@@ -63,19 +68,17 @@ IF (APPLE)
+ ENDIF (APPLE)
+ 
+ FIND_PATH(PROJ_INCLUDE_DIR NAMES proj.h proj_api.h PATHS
+-  "$ENV{INCLUDE}"
+-  "$ENV{LIB_DIR}/include"
+-  "$ENV{GDAL_DIR}/include"
++  "${PROJ_INCLUDE_DIRS}"
+   )
+ 
+-FIND_LIBRARY(PROJ_LIBRARY NAMES proj_i proj proj_6_1 PATHS
+-  "$ENV{LIB}"
+-  "$ENV{LIB_DIR}/lib"
+-  "$ENV{GDAL_DIR}/lib"
+-  )
++# FIND_LIBRARY(PROJ_LIBRARY NAMES proj_i proj proj_6_1 PATHS
++  # "$ENV{LIB}"
++  # "$ENV{LIB_DIR}/lib"
++  # "$ENV{GDAL_DIR}/lib"
++  # )
+ 
+ IF (PROJ_INCLUDE_DIR AND PROJ_LIBRARY)
+-  SET(PROJ_FOUND TRUE)
++  SET(PROJ_FOUND TRUE) 
+   IF (EXISTS "${PROJ_INCLUDE_DIR}/proj.h")
+     SET(PROJ_API_FILE "proj.h")
+   ELSE ()
+@@ -94,4 +97,4 @@ ELSE ()
+       MESSAGE(STATUS "Could NOT find Proj")
+     ENDIF (NOT PROJ_FIND_QUIETLY)
+   ENDIF (PROJ_FIND_REQUIRED)
+-ENDIF ()
++ENDIF ()
+\ No newline at end of file
+-- 
+2.30.1.windows.1
+
